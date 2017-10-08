@@ -4,7 +4,7 @@
  * phpDropbox class
  *
  * @author José Javier Fernández Mendoza <josejavierfm@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @copyright Copyright (c), José Javier Fernández Mendoza. All rights reserved.
  * @license BSD License
  */
@@ -13,11 +13,11 @@
 
 class phpDropbox{
     // current version
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     const API_URL = 'https://api.dropboxapi.com/';
     const API_CONTENT_URL = 'https://content.dropboxapi.com/';
-    const TOKEN = 'xxxxxxxxxxxxxxxxxxxx';
+    const TOKEN = 'xxxxxxxxxxxxxxx';
 
     public function __construct()
     {
@@ -73,6 +73,41 @@ class phpDropbox{
                     array(
                          "path"=> "/".$ruta,
                          "recursive"=> false
+                    )
+                );
+            $headers = array('Authorization: Bearer '. self::TOKEN,
+                'Content-Type: application/json'
+                
+
+            );
+
+            $ch = curl_init($api_url);
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POST, true);
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonv);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+           
+            
+
+            $response = curl_exec($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            //echo($http_code.'<br/>');
+
+
+            curl_close($ch);
+            return $response;
+    }
+
+    function CrearCarpetaDROPBOX($ruta){
+            $api_url = self::API_URL.'2/files/create_folder_v2'; //dropbox api url
+            
+
+            $jsonv=json_encode(
+                    array(
+                         "path"=> "/".$ruta,
+                         "autorename"=> false
                     )
                 );
             $headers = array('Authorization: Bearer '. self::TOKEN,
