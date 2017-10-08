@@ -13,6 +13,10 @@ $carpeta_dropbox="mybackup";
 try {
   	echo "<h1>Create class</h1><br>";
   	$phpDB=new phpDropbox();
+  	echo "<h2>Get usage space</h2><br>";
+  	$dataUS=$phpDB->EspacioUsadoDROPBOX(false);
+  	echo "<pre>";print_r($dataUS);echo "</pre>";
+
   	echo "<h2>Create folder</h2><br>";
   	$nuevacarpeta=$carpeta_dropbox."_new_".date("YmdH");
   	$phpDB->CrearCarpetaDROPBOX($nuevacarpeta);
@@ -39,7 +43,7 @@ try {
 	echo "File test created<br>";
 
 	if ($phpDB->SubirDROPBOX($ficherotmp,".",$nuevacarpeta)){
-		echo "Subido correctamente<br>";
+		echo "upload successfully<br>";
 		unlink($ficherotmp);
 	}
 				

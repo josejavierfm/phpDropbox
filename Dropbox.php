@@ -4,7 +4,7 @@
  * phpDropbox class
  *
  * @author José Javier Fernández Mendoza <josejavierfm@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @copyright Copyright (c), José Javier Fernández Mendoza. All rights reserved.
  * @license BSD License
  */
@@ -13,11 +13,11 @@
 
 class phpDropbox{
     // current version
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     const API_URL = 'https://api.dropboxapi.com/';
     const API_CONTENT_URL = 'https://content.dropboxapi.com/';
-    const TOKEN = 'xxxxxxxxxxxxxxx';
+    const TOKEN = 'xxxxxxxxxxxx';
 
     public function __construct()
     {
@@ -135,6 +135,47 @@ class phpDropbox{
             return $response;
     }
 
+    function EspacioUsadoDROPBOX($verjson=true){
+        $api_url = self::API_URL.'2/users/get_space_usage'; //dropbox api url
+            
+
+           $jsonv=json_encode(null);
+
+            $headers = array('Authorization: Bearer '. self::TOKEN,
+                'Content-Type: text/plain; charset=dropbox-cors-hack'
+                
+
+            );
+
+            $ch = curl_init($api_url);
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POST, true);
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonv);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+           
+            
+
+            $response = curl_exec($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            //echo($http_code.'<br/>');
+            
+
+            curl_close($ch);
+            if ($verjson){
+                return $response;
+            }else{
+                $obj = json_decode($response);
+                $usado=$obj->used;
+                $total=$obj->allocation->allocated;
+                $porcentaje=round(($usado/$total)*100,2);
+                $output=$obj->used." used ".$obj->allocation->allocated." total => $porcentaje %";
+
+                return $output;
+            }
+            
+    }
     function SubirDROPBOX($fichero,$carpetalocal="",$carpetaDropbox=""){
             $api_url = self::API_CONTENT_URL.'2/files/upload'; //dropbox api url
             if ($carpetaDropbox!=""){
